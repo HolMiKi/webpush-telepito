@@ -1,0 +1,32 @@
+
+name: WebPush telepito
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Forraskod letoltese
+        uses: actions/checkout@v4
+
+      - name: PHP telepitese
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: curl, mbstring, openssl
+          tools: composer:v2
+
+      - name: Fuggosegek telepitese
+        run: composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+
+      - name: Vendor ZIP keszitese
+        run: zip -r vendor.zip vendor
+
+      - name: ZIP feltoltese
+        uses: actions/upload-artifact@v4
+        with:
+          name: webpush-vendor
+          path: vendor.zip
